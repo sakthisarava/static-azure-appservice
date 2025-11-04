@@ -10,10 +10,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Setup Azure CLI
-      uses: azure/CLI@v1
+    - name: Login to Azure
+      uses: azure/login@v1
       with:
-        azcliversion: 2.0.72
-        inlineScript: |
-          az login --service-principal -u ${{ secrets.AZURE_APP_ID }} -p ${{ secrets.AZURE_PASSWORD }} --tenant ${{ secrets.AZURE_TENANT }}
-          az webapp up --name Test-static-app --resource-group Test-static-app_group --html
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'Test-static-app'
+        package: '.'
